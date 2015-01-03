@@ -7,7 +7,7 @@ case class IDCard(val owner: String) extends Product {
   def use = println(owner + "のカードを使います。")
 }
 
-object IDCardFactory extends Factory {
+class IDCardFactory extends Factory {
   val owners = mutable.LinkedList[Product]()
   protected def createProduct(owner: String) = IDCard(owner)
   protected def registerProduct(product: Product) = owners :+ product
@@ -15,9 +15,10 @@ object IDCardFactory extends Factory {
 
 object Main {
   def main(args: Array[String]) {
-    val card1 = IDCardFactory.create("Alice")
-    val card2 = IDCardFactory.create("Bob")
-    val card3 = IDCardFactory.create("Cris")
+    val factory = new IDCardFactory
+    val card1 = factory.create("Alice")
+    val card2 = factory.create("Bob")
+    val card3 = factory.create("Cris")
     card1 use;
     card2 use;
     card3 use;
