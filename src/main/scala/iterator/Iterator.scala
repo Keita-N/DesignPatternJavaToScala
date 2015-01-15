@@ -2,18 +2,19 @@ package iterator
 
 import scala.collection.mutable.ListBuffer
 
-trait Aggregate {
-  def iterator: Iterator
+trait Aggregate[+T] {
+  def iterator: Iterator[T]
 }
 
-trait Iterator {
+trait Iterator[+T] {
   def hasNext: Boolean
-  def next: Any
+  def next: T
 }
 
 case class Book(val name: String)
+case class Magazine(override val name: String, val month: Int) extends Book(name)
 
-class BookShelf extends Aggregate {
+class BookShelf extends Aggregate[Book] {
   val books: ListBuffer[Book] = ListBuffer.empty
   var last = 0
   def getBookAt(index: Int) = books(index)
@@ -25,7 +26,7 @@ class BookShelf extends Aggregate {
   def iterator = new BookShelfIterator(this)
 }
 
-class BookShelfIterator(val bookShelf: BookShelf) extends Iterator {
+class BookShelfIterator(val bookShelf: BookShelf) extends Iterator[Book] {
   var index = 0
   def hasNext = {
     if (index < bookShelf.getLength)
@@ -48,6 +49,7 @@ object Main {
     bookShelf appendBook Book("Cinderella")
     bookShelf appendBook Book("Daddy-Long-Legs")
     bookShelf appendBook Book("Edgar Allan Poe")
+    bookShelf appendBook Magazine("Weekly JUMP", 12)
     val it = bookShelf.iterator
     while (it.hasNext) {
       val book = it.next
